@@ -12,3 +12,34 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  username String @unique @db.VarChar(50)
+  password String
+
+  @@map("user")
+}
+
+model Product {
+  id             Int     @id @default(autoincrement())
+  name           String
+  description    String
+  category       String
+  retailPrice    Decimal @db.Decimal(10, 2)
+  wholesalePrice Decimal @db.Decimal(10, 2)
+  minQuantity    Int
+  imageTitle     String
+  imagePath      String
+
+  @@map("product")
+}
+
+model Banner {
+  id         Int    @id @default(autoincrement())
+  imageTitle String
+  imagePath  String
+
+  @@map("banner")
+}
