@@ -1,5 +1,5 @@
 'use client'
-import AddProductForm from '@/components/choose-file'
+import AddProductForm from '@/components/add-product-form'
 import HeaderAdm from '@/components/header-adm'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,9 +23,6 @@ export default function Adm() {
   return (
     <div className="">
       <HeaderAdm />
-      <h1 className="p-5 text-center text-xl font-bold">
-        Tela de administração
-      </h1>
 
       {section && (
         <section className="flex flex-col items-center justify-center gap-3 md:flex-row">
