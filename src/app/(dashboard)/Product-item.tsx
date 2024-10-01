@@ -11,7 +11,6 @@ import {
 import { MoreHorizontal } from 'lucide-react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Product } from '@prisma/client'
-import { deleteProduct } from './actions'
 
 export function ProductItem({ product }: { product: Product }) {
   return (
@@ -21,7 +20,7 @@ export function ProductItem({ product }: { product: Product }) {
           alt="Product image"
           className="aspect-square rounded-md object-cover"
           height="64"
-          src={product.imagePath}
+          src={`/api/uploads/${product.imagePath}`}
           width="64"
         />
       </TableCell>
@@ -48,7 +47,7 @@ export function ProductItem({ product }: { product: Product }) {
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>
-              <form action={deleteProduct}>
+              <form>
                 <button type="submit">Delete</button>
               </form>
             </DropdownMenuItem>
