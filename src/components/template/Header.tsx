@@ -1,6 +1,6 @@
-import { Button } from '../ui/button'
+import User from '@/app/(dashboard)/User'
+import { Search } from 'lucide-react'
 import { Input } from '../ui/input'
-import { LogOutIcon, Search } from 'lucide-react'
 
 export default function Header() {
   return (
@@ -15,9 +15,7 @@ export default function Header() {
           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
         />
       </form>
-      <Button className="rounded-full p-3">
-        <LogOutIcon />
-      </Button>
+      <User />
     </header>
   )
 }
