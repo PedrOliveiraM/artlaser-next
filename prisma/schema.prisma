@@ -32,6 +32,8 @@ model Product {
   minQuantity    Int
   imageTitle     String
   imagePath      String
+  status         Boolean
+  CreatedAt      DateTime @default(now())
 
   @@map("product")
 }
