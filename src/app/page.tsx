@@ -1,9 +1,12 @@
-import { Button } from '@/components/ui/button'
+import LayoutPage from '@/components/template/LayoutPage'
+import { ProductsTable } from './(dashboard)/Products-table'
+import { Product } from '@prisma/client'
 
 export default function Home() {
+  const products: Product[] = []
   return (
-    <div className="div">
-      <Button className="bg-green-500 hover:bg-green-800">Click here</Button>
-    </div>
+    <LayoutPage>
+      <ProductsTable products={products} offset={5} totalProducts={10} />
+    </LayoutPage>
   )
 }
