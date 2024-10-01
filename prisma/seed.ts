@@ -13,7 +13,7 @@ async function main() {
       wholesalePrice: new Prisma.Decimal(19.99),
       minQuantity: 1,
       imageTitle: 'Chaveiro Personalizado Imagem',
-      imagePath: 'src/uploads/ChaveiroPersonalizado.png',
+      imagePath: 'ChaveiroPersonalizado.png',
       status: true,
     },
     {
@@ -24,7 +24,7 @@ async function main() {
       wholesalePrice: new Prisma.Decimal(29.99),
       minQuantity: 5,
       imageTitle: 'Copo GG Stanley Imagem',
-      imagePath: 'src/uploads/CopoGGstanley.png',
+      imagePath: 'CopoGGstanley.png',
       status: true,
     },
     {
@@ -35,7 +35,7 @@ async function main() {
       wholesalePrice: new Prisma.Decimal(39.99),
       minQuantity: 10,
       imageTitle: 'São Cosmo e Damião Imagem',
-      imagePath: 'src/uploads/SaoCosmoDamiao.png',
+      imagePath: 'SaoCosmoDamiao.png',
       status: true,
     },
     {
@@ -46,7 +46,7 @@ async function main() {
       wholesalePrice: new Prisma.Decimal(49.99),
       minQuantity: 2,
       imageTitle: 'Troféu Personalizado Imagem',
-      imagePath: 'src/uploads/TrofeuPersonalizado.png',
+      imagePath: 'TrofeuPersonalizado.png',
       status: true,
     },
   ]
