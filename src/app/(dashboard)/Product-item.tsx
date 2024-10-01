@@ -24,17 +24,26 @@ export function ProductItem({ product }: { product: Product }) {
           width="64"
         />
       </TableCell>
-      <TableCell className="font-medium">{product.name}</TableCell>
-      <TableCell>
-        <Badge variant="outline" className="capitalize">
-          {product.status}
+
+      <TableCell className="text-center font-medium">{product.name}</TableCell>
+
+      <TableCell className="text-center">
+        <Badge
+          variant={product.status ? 'success' : 'destructive'}
+          className="capitalize"
+        >
+          {product.status ? 'Ativo' : 'Pausado'}S
         </Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${product.retailPrice}`}</TableCell>
-      <TableCell className="hidden md:table-cell">
-        {product.minQuantity}
+
+      <TableCell className="hidden text-center md:table-cell">{`$${product.retailPrice}`}</TableCell>
+
+      <TableCell className="hidden text-center md:table-cell">
+        {`$${product.wholesalePrice}`}
       </TableCell>
-      <TableCell className="hidden md:table-cell">{product.status}</TableCell>
+      <TableCell className="hidden text-center md:table-cell">
+        {product.category}
+      </TableCell>
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -44,11 +53,12 @@ export function ProductItem({ product }: { product: Product }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuItem>Status</DropdownMenuItem>
+            <DropdownMenuItem>Editar</DropdownMenuItem>
             <DropdownMenuItem>
               <form>
-                <button type="submit">Delete</button>
+                <button type="submit">Remover</button>
               </form>
             </DropdownMenuItem>
           </DropdownMenuContent>
