@@ -32,7 +32,7 @@ export function ProductItem({ product }: { product: Product }) {
           variant={product.status ? 'success' : 'destructive'}
           className="capitalize"
         >
-          {product.status ? 'Ativo' : 'Pausado'}S
+          {product.status ? 'Ativo' : 'Pausado'}
         </Badge>
       </TableCell>
 
