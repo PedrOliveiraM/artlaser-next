@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import AsideMenu from './AsideMenu'
 import Footer from './Footer'
 import Header from './Header'
@@ -18,14 +17,6 @@ export default function LayoutPage({ children }: LayoutPageProps) {
         </main>
       </div>
       <Footer />
-      <div className="flex items-center justify-center">
-        <Image
-          src={'/uploads/CopoGGstanley.png'}
-          alt="Photo Stanley"
-          width={500}
-          height={500}
-        />
-      </div>
     </main>
   )
 }
