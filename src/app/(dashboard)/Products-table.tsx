@@ -48,6 +48,7 @@ export function ProductsTable({
         <CardTitle>Produtos</CardTitle>
         <CardDescription>Gerencie aqui seus produtos</CardDescription>
       </CardHeader>
+
       <CardContent>
         <Table>
           <TableHeader>
@@ -87,11 +88,11 @@ export function ProductsTable({
       <CardFooter>
         <form className="flex w-full items-center justify-between">
           <div className="text-xs text-muted-foreground">
-            Showing{' '}
+            Mostrando{' '}
             <strong>
               {Math.min(offset - productsPerPage, totalProducts) + 1}-{offset}
             </strong>{' '}
-            of <strong>{totalProducts}</strong> products
+            de <strong>{totalProducts}</strong> produtos
           </div>
           <div className="flex">
             <Button

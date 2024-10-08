@@ -76,11 +76,11 @@ export function BannersTable({
       <CardFooter>
         <form className="flex w-full items-center justify-between">
           <div className="text-xs text-muted-foreground">
-            Showing{' '}
+            Mostrando{' '}
             <strong>
               {Math.min(offset - productsPerPage, totalBanners) + 1}-{offset}
             </strong>{' '}
-            of <strong>{totalBanners}</strong> banners
+            de <strong>{totalBanners}</strong> banners
           </div>
           <div className="flex">
             <Button

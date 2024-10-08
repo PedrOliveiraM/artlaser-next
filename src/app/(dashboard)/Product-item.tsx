@@ -17,7 +17,7 @@ export function ProductItem({ product }: { product: Product }) {
     <TableRow>
       <TableCell className="hidden sm:table-cell">
         <Image
-          alt="Product image"
+          alt={product.imageTitle}
           className="aspect-square rounded-md object-cover"
           height="64"
           src={`/api/uploads/${product.imagePath}`}
@@ -36,10 +36,10 @@ export function ProductItem({ product }: { product: Product }) {
         </Badge>
       </TableCell>
 
-      <TableCell className="hidden text-center md:table-cell">{`$${product.retailPrice}`}</TableCell>
+      <TableCell className="hidden text-center md:table-cell">{`R$ ${product.retailPrice}`}</TableCell>
 
       <TableCell className="hidden text-center md:table-cell">
-        {`$${product.wholesalePrice}`}
+        {`R$ ${product.wholesalePrice}`}
       </TableCell>
 
       <TableCell className="hidden text-center md:table-cell">
