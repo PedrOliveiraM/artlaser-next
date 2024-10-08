@@ -23,12 +23,12 @@ model User {
 }
 
 model Product {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
   description    String
   category       String
-  retailPrice    Decimal @db.Decimal(10, 2)
-  wholesalePrice Decimal @db.Decimal(10, 2)
+  retailPrice    Decimal  @db.Decimal(10, 2)
+  wholesalePrice Decimal  @db.Decimal(10, 2)
   minQuantity    Int
   imageTitle     String
   imagePath      String
@@ -39,9 +39,10 @@ model Product {
 }
 
 model Banner {
-  id         Int    @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   imageTitle String
   imagePath  String
+  status     Boolean
 
   @@map("banner")
 }
