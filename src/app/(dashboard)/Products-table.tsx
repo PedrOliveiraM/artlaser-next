@@ -45,10 +45,8 @@ export function ProductsTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Products</CardTitle>
-        <CardDescription>
-          Manage your products and view their sales performance.
-        </CardDescription>
+        <CardTitle>Produtos</CardTitle>
+        <CardDescription>Gerencie aqui seus produtos</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -104,7 +102,7 @@ export function ProductsTable({
               disabled={offset === productsPerPage}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
-              Prev
+              Anterior
             </Button>
             <Button
               formAction={nextPage}
@@ -113,7 +111,7 @@ export function ProductsTable({
               type="submit"
               disabled={offset + productsPerPage > totalProducts}
             >
-              Next
+              Próximo
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
