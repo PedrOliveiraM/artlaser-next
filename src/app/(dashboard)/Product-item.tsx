@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal, Pencil, ToggleRight, Trash2 } from 'lucide-react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Product } from '@prisma/client'
 
@@ -41,9 +41,11 @@ export function ProductItem({ product }: { product: Product }) {
       <TableCell className="hidden text-center md:table-cell">
         {`$${product.wholesalePrice}`}
       </TableCell>
+
       <TableCell className="hidden text-center md:table-cell">
         {product.category}
       </TableCell>
+
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -53,12 +55,23 @@ export function ProductItem({ product }: { product: Product }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem>Status</DropdownMenuItem>
-            <DropdownMenuItem>Editar</DropdownMenuItem>
+            <DropdownMenuLabel className="border-b-2 border-solid">
+              Ações
+            </DropdownMenuLabel>
+            <DropdownMenuItem className="flex items-center gap-2">
+              <ToggleRight size={20} />
+              {product.status ? 'Desativar' : 'Ativar'}
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center gap-2">
+              <Pencil size={20} />
+              Editar
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <form>
-                <button type="submit">Remover</button>
+                <button type="submit" className="flex items-center gap-2">
+                  <Trash2 size={20} />
+                  Remover
+                </button>
               </form>
             </DropdownMenuItem>
           </DropdownMenuContent>
