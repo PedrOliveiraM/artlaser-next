@@ -21,15 +21,18 @@ import { Banner } from '@prisma/client'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { BannerItem } from './Banner-item'
+import { useMemo } from 'react'
 
 export function BannersTable({
   banners,
   offset,
   totalBanners,
+  filter,
 }: {
   banners: Banner[] | []
   offset: number
   totalBanners: number
+  filter: string
 }) {
   const router = useRouter()
   const productsPerPage = 5
@@ -41,6 +44,12 @@ export function BannersTable({
   function nextPage() {
     router.push(`/?offset=${offset}`, { scroll: false })
   }
+
+  const filteredBanners = useMemo(() => {
+    return banners.filter((banner) =>
+      banner.imageTitle.toLowerCase().includes(filter?.toLocaleLowerCase()),
+    )
+  }, [banners, filter])
 
   return (
     <Card>
@@ -67,7 +76,7 @@ export function BannersTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {banners.map((banner) => (
+            {filteredBanners.map((banner) => (
               <BannerItem key={banner.id} banner={banner} />
             ))}
           </TableBody>
