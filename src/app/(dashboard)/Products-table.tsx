@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useMemo } from 'react'
 import {
   TableHead,
   TableRow,
@@ -26,10 +27,12 @@ export function ProductsTable({
   products,
   offset,
   totalProducts,
+  filter,
 }: {
   products: Product[] | []
   offset: number
   totalProducts: number
+  filter: string
 }) {
   const router = useRouter()
   const productsPerPage = 5
@@ -41,6 +44,12 @@ export function ProductsTable({
   function nextPage() {
     router.push(`/?offset=${offset}`, { scroll: false })
   }
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) =>
+      product.name.toLowerCase().includes(filter?.toLowerCase() || ''),
+    )
+  }, [products, filter]) // Executa novamente a filtragem sempre que o filter ou products mudar
 
   return (
     <Card>
@@ -79,7 +88,7 @@ export function ProductsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <ProductItem key={product.id} product={product} />
             ))}
           </TableBody>
