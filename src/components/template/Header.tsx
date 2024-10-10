@@ -4,7 +4,7 @@ import { Input } from '../ui/input'
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between gap-1 p-4">
+    <header className="flex items-center justify-between gap-1 p-5">
       <h1 className="text-4xl font-bold">Artlaser Dashboard</h1>
       <form className="relative ml-auto flex-1 md:grow-0">
         <Search className="absolute left-2.5 top-[.75rem] h-4 w-4 text-muted-foreground" />
