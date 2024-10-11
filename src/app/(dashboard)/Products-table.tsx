@@ -1,55 +1,80 @@
-'use client'
-
-import React, { useMemo } from 'react'
-import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableBody,
-  Table,
-} from '@/components/ui/table'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-
-import { useRouter } from 'next/navigation'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { Product } from '@prisma/client'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useMemo, useState } from 'react'
+import TemplateCardFooter from './CardFooter'
 import { ProductItem } from './Product-item'
 
 export function ProductsTable({
   products,
-  offset,
   totalProducts,
   filter,
 }: {
   products: Product[] | []
-  offset: number
   totalProducts: number
   filter: string
 }) {
   const router = useRouter()
-  const productsPerPage = 5
+  const searchParams = useSearchParams()
+  const productsPerPage = 2
 
-  function prevPage() {
-    router.back()
+  const minOffset = 1
+  const maxOffset = () => {
+    if (totalProducts % productsPerPage === 0) {
+      return totalProducts / productsPerPage
+    } else {
+      return Math.floor(totalProducts / productsPerPage) + 1
+    }
   }
+
+  function validOffset(offset: number): boolean {
+    return offset > 0 && offset <= maxOffset()
+  }
+
+  const initialOffset = () => {
+    const offsetParams = Number(searchParams?.get('offset'))
+
+    if (validOffset(offsetParams)) return offsetParams
+    else return minOffset
+  }
+
+  const [offset, setOffset] = useState(initialOffset)
 
   function nextPage() {
-    router.push(`/?offset=${offset}`, { scroll: false })
+    const newOffset = offset + 1
+    setOffset(newOffset)
+    router.push(`/?offset=${newOffset}`, { scroll: false })
   }
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
+  function prevPage() {
+    const newOffset = Math.max(1, offset - productsPerPage)
+    setOffset(newOffset)
+    router.push(`/?offset=${newOffset}`, { scroll: false })
+  }
+
+  const paginatedProducts = useMemo(() => {
+    const filtered = products.filter((product) =>
       product.name.toLowerCase().includes(filter?.toLowerCase() || ''),
     )
-  }, [products, filter]) // Executa novamente a filtragem sempre que o filter ou products mudar
+
+    return filtered.slice(
+      (offset - 1) * productsPerPage,
+      offset * productsPerPage,
+    )
+  }, [products, filter, offset])
 
   return (
     <Card>
@@ -88,45 +113,20 @@ export function ProductsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredProducts.map((product) => (
+            {paginatedProducts.map((product) => (
               <ProductItem key={product.id} product={product} />
             ))}
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>
-        <form className="flex w-full items-center justify-between">
-          <div className="text-xs text-muted-foreground">
-            Mostrando{' '}
-            <strong>
-              {Math.min(offset - productsPerPage, totalProducts) + 1}-{offset}
-            </strong>{' '}
-            de <strong>{totalProducts}</strong> produtos
-          </div>
-          <div className="flex">
-            <Button
-              formAction={prevPage}
-              variant="ghost"
-              size="sm"
-              type="submit"
-              disabled={offset === productsPerPage}
-            >
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Anterior
-            </Button>
-            <Button
-              formAction={nextPage}
-              variant="ghost"
-              size="sm"
-              type="submit"
-              disabled={offset + productsPerPage > totalProducts}
-            >
-              Próximo
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </form>
-      </CardFooter>
+      <TemplateCardFooter
+        offset={offset}
+        prevPage={prevPage}
+        nextPage={nextPage}
+        totalItems={totalProducts}
+        itemsPerPage={productsPerPage}
+        maxOffset={maxOffset()} // Aqui você chama a função maxOffset
+      />
     </Card>
   )
 }
