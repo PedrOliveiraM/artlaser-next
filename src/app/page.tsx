@@ -41,15 +41,14 @@ export default function Home() {
       <div className="space-y-2">
         <ProductsTable
           products={products}
-          offset={5}
           totalProducts={products.length}
           filter={filter}
         />
         <BannersTable
           banners={banners}
-          offset={5}
           totalBanners={banners.length}
           filter={filter}
+          offset={0}
         />
       </div>
     </LayoutPage>
