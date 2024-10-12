@@ -14,20 +14,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-
+import { Button } from '@/components/ui/button'
 import { Product } from '@prisma/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import TemplateCardFooter from './CardFooter'
 import { ProductItem } from './Product-item'
-import { Button } from '@/components/ui/button'
+import SelectItems from './Select-items'
 
 export function ProductsTable({
   products,
@@ -44,19 +37,20 @@ export function ProductsTable({
 
   const handleSelectChange = (value: string) => {
     setItemsPerPage(Number(value))
-    setOffset(1) // Reseta para a primeira página quando os itens por página mudam
+    setOffset(1)
   }
 
   const minOffset = 1
+
   const pages = () => {
-    return Math.ceil(totalProducts / itemsPerPage) || 1 // Para garantir pelo menos uma página
+    return Math.ceil(totalProducts / itemsPerPage) || 1
   }
 
   const [maxOffset, setMaxOffset] = useState(pages())
 
   useEffect(() => {
     setMaxOffset(pages())
-  }, [itemsPerPage, totalProducts]) // Atualiza quando totalProducts ou itemsPerPage muda
+  }, [itemsPerPage, totalProducts])
 
   function validOffset(offset: number): boolean {
     return offset > 0 && offset <= maxOffset
@@ -74,10 +68,10 @@ export function ProductsTable({
       product.name.toLowerCase().includes(filter?.toLowerCase() || ''),
     )
     return filtered.slice((offset - 1) * itemsPerPage, offset * itemsPerPage)
-  }, [products, filter, offset, itemsPerPage]) // Adicione itemsPerPage aqui
+  }, [products, filter, offset, itemsPerPage])
 
   useEffect(() => {
-    setOffset(1) // Reseta o offset quando a lista de produtos mudar
+    setOffset(1)
   }, [products])
 
   function nextPage() {
@@ -106,21 +100,10 @@ export function ProductsTable({
           </div>
           <div className="flex gap-2">
             <Button>Cadastrar</Button>
-            <Select onValueChange={handleSelectChange}>
-              <SelectTrigger className="w-20">
-                <SelectValue placeholder="Itens" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5</SelectItem>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-                <SelectItem value="30">30</SelectItem>
-              </SelectContent>
-            </Select>
+            <SelectItems handleSelectChange={handleSelectChange} />
           </div>
         </div>
       </CardHeader>
-
       <CardContent>
         <Table>
           <TableHeader>
