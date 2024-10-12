@@ -31,8 +31,6 @@ export function ProductsTable({
   totalProducts: number
   filter: string
 }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
   const [itemsPerPage, setItemsPerPage] = useState(2)
 
   const handleSelectChange = (value: string) => {
@@ -43,7 +41,7 @@ export function ProductsTable({
   const minOffset = 1
 
   const pages = () => {
-    return Math.ceil(totalProducts / itemsPerPage) || 1
+    return Math.ceil(totalProducts / itemsPerPage) || minOffset
   }
 
   const [maxOffset, setMaxOffset] = useState(pages())
@@ -55,6 +53,8 @@ export function ProductsTable({
   function validOffset(offset: number): boolean {
     return offset > 0 && offset <= maxOffset
   }
+
+  const searchParams = useSearchParams()
 
   const initialOffset = () => {
     const offsetParams = Number(searchParams?.get('offset'))
@@ -73,6 +73,8 @@ export function ProductsTable({
   useEffect(() => {
     setOffset(1)
   }, [products])
+
+  const router = useRouter()
 
   function nextPage() {
     const newOffset = offset + 1
