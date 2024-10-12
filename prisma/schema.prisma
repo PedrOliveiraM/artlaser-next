@@ -37,12 +37,11 @@ model Product {
 
   @@map("product")
 }
-
 model Banner {
-  id         Int     @id @default(autoincrement())
-  imageTitle String
-  imagePath  String
-  status     Boolean
+  id        Int     @id @default(autoincrement())
+  name      String
+  imagePath String
+  status    Boolean
 
   @@map("banner")
 }
