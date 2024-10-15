@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { db } from '@/lib/db'
+
 export async function deleteProduct(formData: FormData) {
   const id = Number(formData.get('id'))
   return id
@@ -24,8 +25,8 @@ export async function updateBannerStatus(id: number) {
   })
 
   return {
-    status: true,
-    msg: 200,
+    success: true,
+    message: 'Product status updated successfully',
     data: updatedBanner,
   }
 }
@@ -33,9 +34,7 @@ export async function updateProductStatus(id: number) {
   try {
     const product = await db.product.findUnique({ where: { id } })
 
-    if (!product) {
-      throw new Error(`Product with Id ${id} not found`)
-    }
+    if (!product) throw new Error(`The Id Product ${id} not found`)
 
     const updatedProduct = await db.product.update({
       where: { id },
