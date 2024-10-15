@@ -20,6 +20,7 @@ import TemplateCardFooter from './CardFooter'
 import { ProductItem } from './Product-item'
 import SelectItems from './Select-items'
 import { usePagination } from './hooks/usePagination'
+import Link from 'next/link'
 
 export function ProductsTable({
   products,
@@ -44,66 +45,6 @@ export function ProductsTable({
     totalItems: totalProducts,
     itemsPerPageDefault: 2,
   })
-  // const [itemsPerPage, setItemsPerPage] = useState(2)
-
-  // const handleSelectChange = (value: string) => {
-  //   setItemsPerPage(Number(value))
-  //   setOffset(1)
-  // }
-
-  // const minOffset = 1
-
-  // const pages = () => {
-  //   return Math.ceil(totalProducts / itemsPerPage) || minOffset
-  // }
-
-  // const [maxOffset, setMaxOffset] = useState(pages())
-
-  // useEffect(() => {
-  //   setMaxOffset(pages())
-  // }, [itemsPerPage, totalProducts])
-
-  // function validOffset(offset: number): boolean {
-  //   return offset > 0 && offset <= maxOffset
-  // }
-
-  // const searchParams = useSearchParams()
-
-  // const initialOffset = () => {
-  //   const offsetParams = Number(searchParams?.get('offset'))
-  //   return validOffset(offsetParams) ? offsetParams : minOffset
-  // }
-
-  // const [offset, setOffset] = useState(initialOffset)
-
-  // const paginatedProducts = useMemo(() => {
-  //   const filtered = products.filter((product) =>
-  //     product.name.toLowerCase().includes(filter?.toLowerCase() || ''),
-  //   )
-  //   return filtered.slice((offset - 1) * itemsPerPage, offset * itemsPerPage)
-  // }, [products, filter, offset, itemsPerPage])
-
-  // useEffect(() => {
-  //   setOffset(1)
-  // }, [products])
-
-  // const router = useRouter()
-
-  // function nextPage() {
-  //   const newOffset = offset + 1
-  //   if (validOffset(newOffset)) {
-  //     setOffset(newOffset)
-  //     router.push(`/?offset=${newOffset}`, { scroll: false })
-  //   }
-  // }
-
-  // function prevPage() {
-  //   const newOffset = Math.max(1, offset - 1)
-  //   if (validOffset(newOffset)) {
-  //     setOffset(newOffset)
-  //     router.push(`/?offset=${newOffset}`, { scroll: false })
-  //   }
-  // }
 
   return (
     <Card>
@@ -114,7 +55,9 @@ export function ProductsTable({
             <CardDescription>Gerencie aqui seus produtos</CardDescription>
           </div>
           <div className="flex gap-2">
-            <Button>Cadastrar</Button>
+            <Button asChild>
+              <Link href={'/pages/dashboard/add-product'}>Cadastrar</Link>
+            </Button>
             <SelectItems handleSelectChange={handleSelectChange} />
           </div>
         </div>
