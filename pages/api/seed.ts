@@ -5,6 +5,19 @@ const prisma = new PrismaClient()
 
 async function seed(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
+    const banners = [
+      {
+        name: 'Promo dia dos pais',
+        imagePath: 'promoçãoDiaDosPais.png',
+        status: false,
+      },
+      {
+        name: 'Promo Vim pelo site',
+        imagePath: 'promoçãoPeloSite.png',
+        status: true,
+      },
+    ]
+
     const products = [
       {
         name: 'Chaveiro Personalizado',
@@ -54,11 +67,22 @@ async function seed(req: NextApiRequest, res: NextApiResponse) {
 
     try {
       // Adicionando cada produto ao banco de dados
+
+      await prisma.product.deleteMany()
+      await prisma.banner.deleteMany()
+
       for (const product of products) {
         await prisma.product.create({
           data: product,
         })
       }
+
+      for (const banner of banners) {
+        await prisma.banner.create({
+          data: banner,
+        })
+      }
+
       res.status(200).json({ message: 'Seeding completed successfully.' })
     } catch (error) {
       console.error(error)
