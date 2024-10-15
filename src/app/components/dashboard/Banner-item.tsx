@@ -1,14 +1,14 @@
 'use client'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/app/components/ui/badge'
+import { Button } from '@/app/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { TableCell, TableRow } from '@/components/ui/table'
+} from '@/app/components/ui/dropdown-menu'
+import { TableCell, TableRow } from '@/app/components/ui/table'
 import { Banner } from '@prisma/client'
 import { MoreHorizontal, Pencil, ToggleRight, Trash2 } from 'lucide-react'
 import Image from 'next/image'

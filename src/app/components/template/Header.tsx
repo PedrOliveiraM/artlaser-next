@@ -1,4 +1,4 @@
-import User from '@/app/(dashboard)/User'
+import User from '@/app/components/dashboard/User'
 import { Search } from 'lucide-react'
 import { Input } from '../ui/input'
 interface HeaderProps {

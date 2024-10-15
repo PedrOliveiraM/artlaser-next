@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/app/components/ui/dropdown-menu'
 import { CircleUserRound, LogOutIcon, Settings } from 'lucide-react'
 
 export default function User() {

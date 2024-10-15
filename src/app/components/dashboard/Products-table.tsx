@@ -1,48 +1,48 @@
 'use client'
-
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/app/components/ui/card'
 import {
   Table,
   TableBody,
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/app/components/ui/table'
 
-import { Button } from '@/components/ui/button'
-import { Banner } from '@prisma/client'
-import { BannerItem } from './Banner-item'
+import { Button } from '@/app/components/ui/button'
+import { Product } from '@prisma/client'
 import TemplateCardFooter from './CardFooter'
-import { usePagination } from './hooks/usePagination'
+import { ProductItem } from './Product-item'
 import SelectItems from './Select-items'
+import { usePagination } from './hooks/usePagination'
+import Link from 'next/link'
 
-export function BannersTable({
-  banners,
-  totalBanners,
+export function ProductsTable({
+  products,
+  totalProducts,
   filter,
 }: {
-  banners: Banner[] | []
-  totalBanners: number
+  products: Product[] | []
+  totalProducts: number
   filter: string
 }) {
   const {
     handleSelectChange,
     nextPage,
     prevPage,
-    itemsPerPage,
     maxOffset,
     offset,
     paginatedItems,
+    itemsPerPage,
   } = usePagination({
     filter,
-    totalItems: totalBanners,
-    items: banners,
+    items: products,
+    totalItems: totalProducts,
     itemsPerPageDefault: 2,
   })
 
@@ -51,16 +51,17 @@ export function BannersTable({
       <CardHeader>
         <div className="flex justify-between">
           <div className="flex flex-col">
-            <CardTitle>Banners</CardTitle>
-            <CardDescription>Gerencie aqui seus banners</CardDescription>
+            <CardTitle>Produtos</CardTitle>
+            <CardDescription>Gerencie aqui seus produtos</CardDescription>
           </div>
           <div className="flex gap-2">
-            <Button>Cadastrar</Button>
+            <Button asChild>
+              <Link href={'/pages/dashboard/add-product'}>Cadastrar</Link>
+            </Button>
             <SelectItems handleSelectChange={handleSelectChange} />
           </div>
         </div>
       </CardHeader>
-
       <CardContent>
         <Table>
           <TableHeader>
@@ -68,19 +69,25 @@ export function BannersTable({
               <TableHead className="hidden w-[100px] text-center sm:table-cell">
                 Image
               </TableHead>
-
               <TableHead className="text-center">Name</TableHead>
-
               <TableHead className="text-center">Status</TableHead>
-
+              <TableHead className="hidden text-center md:table-cell">
+                Preço de varejo
+              </TableHead>
+              <TableHead className="hidden text-center md:table-cell">
+                Preço de atacado
+              </TableHead>
+              <TableHead className="hidden text-center md:table-cell">
+                Categoria
+              </TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedItems.map((banner) => (
-              <BannerItem key={banner.id} banner={banner} />
+            {paginatedItems.map((product) => (
+              <ProductItem key={product.id} product={product} />
             ))}
           </TableBody>
         </Table>
@@ -89,7 +96,7 @@ export function BannersTable({
         offset={offset}
         prevPage={prevPage}
         nextPage={nextPage}
-        totalItems={totalBanners}
+        totalItems={totalProducts}
         itemsPerPage={itemsPerPage}
         maxOffset={maxOffset}
       />

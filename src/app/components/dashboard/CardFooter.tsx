@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { CardFooter } from '@/components/ui/card'
+import { Button } from '@/app/components/ui/button'
+import { CardFooter } from '@/app/components/ui/card'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface TemplateCardFooterProps {

@@ -1,7 +1,8 @@
 'use client'
-import { BannersTable } from '@/app/(dashboard)/Banners-table'
-import { ProductsTable } from '@/app/(dashboard)/Products-table'
-import { LayoutPage } from '@/components/template/LayoutPage'
+
+import { BannersTable } from '@/app/components/dashboard/Banners-table'
+import { ProductsTable } from '@/app/components/dashboard/Products-table'
+import { LayoutPage } from '@/app/components/template/LayoutPage'
 import { Banner, Product } from '@prisma/client'
 import { useEffect, useState } from 'react'
 
