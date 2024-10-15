@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { CircleUserRound } from 'lucide-react'
+import { CircleUserRound, LogOutIcon, Settings } from 'lucide-react'
 
 export default function User() {
   return (
@@ -17,8 +17,16 @@ export default function User() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Configurações</DropdownMenuItem>
-        <DropdownMenuItem>Sair</DropdownMenuItem>
+        <DropdownMenuItem>
+          <button className="flex gap-2">
+            <Settings /> Configurações
+          </button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <button className="flex gap-2">
+            <LogOutIcon /> Sair
+          </button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
