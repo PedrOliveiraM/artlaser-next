@@ -13,13 +13,13 @@ import { Banner } from '@prisma/client'
 import { MoreHorizontal, Pencil, ToggleRight, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import { updateStatusBanner } from './_actions/actions'
+import { updateBannerStatus } from './_actions/actions'
 
 export function BannerItem({ banner }: { banner: Banner }) {
   async function handleStatusToggleButton(bannerId: number) {
     try {
-      const res = await updateStatusBanner(bannerId)
-      if (res.status) {
+      const res = await updateBannerStatus(bannerId)
+      if (res.success) {
         setStateBanner(res.data)
       }
     } catch (error) {
