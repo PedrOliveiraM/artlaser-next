@@ -9,7 +9,7 @@ export async function deleteProduct(formData: FormData) {
   revalidatePath('/')
 }
 
-export async function updateStatusBanner(id: number) {
+export async function updateBannerStatus(id: number) {
   const banner = await db.banner.findUnique({
     where: { id },
   })
@@ -27,5 +27,29 @@ export async function updateStatusBanner(id: number) {
     status: true,
     msg: 200,
     data: updatedBanner,
+  }
+}
+export async function updateProductStatus(id: number) {
+  try {
+    const product = await db.product.findUnique({ where: { id } })
+
+    if (!product) {
+      throw new Error(`Product with Id ${id} not found`)
+    }
+
+    const updatedProduct = await db.product.update({
+      where: { id },
+      data: {
+        status: !product.status,
+      },
+    })
+
+    return {
+      success: true,
+      message: 'Product status updated successfully',
+      data: updatedProduct,
+    }
+  } catch (error) {
+    throw new Error(`Failed to update product status: ${error}`)
   }
 }

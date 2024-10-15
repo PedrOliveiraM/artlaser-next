@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,42 +7,57 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Pencil, ToggleRight, Trash2 } from 'lucide-react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Product } from '@prisma/client'
+import { MoreHorizontal, Pencil, ToggleRight, Trash2 } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from 'react'
+import { updateProductStatus } from './_actions/actions'
 
 export function ProductItem({ product }: { product: Product }) {
+  const [stateProduct, setStateProduct] = useState(product)
+
+  async function toggleProductStatus(id: number) {
+    try {
+      const updatedProduct = await updateProductStatus(id)
+      setStateProduct(updatedProduct.data)
+    } catch (error) {
+      console.error('Error updating banner status:', error)
+    }
+  }
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
         <Image
-          alt={product.imageTitle}
+          alt={stateProduct.imageTitle}
           className="aspect-square rounded-md object-cover"
           height="64"
-          src={`/api/uploads/${product.imagePath}`}
+          src={`/api/uploads/${stateProduct.imagePath}`}
           width="64"
         />
       </TableCell>
 
-      <TableCell className="text-center font-medium">{product.name}</TableCell>
+      <TableCell className="text-center font-medium">
+        {stateProduct.name}
+      </TableCell>
 
       <TableCell className="text-center">
         <Badge
-          variant={product.status ? 'success' : 'destructive'}
+          variant={stateProduct.status ? 'success' : 'destructive'}
           className="capitalize"
         >
-          {product.status ? 'Ativo' : 'Pausado'}
+          {stateProduct.status ? 'Ativo' : 'Pausado'}
         </Badge>
       </TableCell>
 
-      <TableCell className="hidden text-center md:table-cell">{`R$ ${product.retailPrice}`}</TableCell>
+      <TableCell className="hidden text-center md:table-cell">{`R$ ${stateProduct.retailPrice}`}</TableCell>
 
       <TableCell className="hidden text-center md:table-cell">
-        {`R$ ${product.wholesalePrice}`}
+        {`R$ ${stateProduct.wholesalePrice}`}
       </TableCell>
 
       <TableCell className="hidden text-center md:table-cell">
-        {product.category}
+        {stateProduct.category}
       </TableCell>
 
       <TableCell>
@@ -59,8 +73,13 @@ export function ProductItem({ product }: { product: Product }) {
               Ações
             </DropdownMenuLabel>
             <DropdownMenuItem className="flex items-center gap-2">
-              <ToggleRight size={20} />
-              {product.status ? 'Desativar' : 'Ativar'}
+              <button
+                className="flex items-center gap-2"
+                onClick={() => toggleProductStatus(stateProduct.id)}
+              >
+                <ToggleRight size={20} />
+                {stateProduct.status ? 'Desativar' : 'Ativar'}
+              </button>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2">
               <Pencil size={20} />
