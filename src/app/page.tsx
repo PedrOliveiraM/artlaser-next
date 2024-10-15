@@ -48,7 +48,6 @@ export default function Home() {
           banners={banners}
           totalBanners={banners.length}
           filter={filter}
-          offset={0}
         />
       </div>
     </LayoutPage>
