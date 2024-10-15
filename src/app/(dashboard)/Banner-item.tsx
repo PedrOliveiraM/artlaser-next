@@ -1,3 +1,4 @@
+'use client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,6 +14,23 @@ import { MoreHorizontal, Pencil, ToggleRight, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 
 export function BannerItem({ banner }: { banner: Banner }) {
+  async function handleStatusToggleButton(bannerId: number) {
+    try {
+      const response = await fetch(`/api/banner/${bannerId}/toggleStatus`, {
+        method: 'PUT',
+      })
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar o status do banner.')
+      }
+
+      const updatedBanner = await response.json()
+      return updatedBanner
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
@@ -49,8 +67,13 @@ export function BannerItem({ banner }: { banner: Banner }) {
               Ações
             </DropdownMenuLabel>
             <DropdownMenuItem className="flex items-center gap-2">
-              <ToggleRight size={20} />
-              {banner.status ? 'Desativar' : 'Ativar'}
+              <Button
+                variant={'ghost'}
+                onClick={() => handleStatusToggleButton(banner.id)}
+              >
+                <ToggleRight size={20} />
+                {banner.status ? 'Desativar' : 'Ativar'}
+              </Button>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2">
               <Pencil size={20} />
