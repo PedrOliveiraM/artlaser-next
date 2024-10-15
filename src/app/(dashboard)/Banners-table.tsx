@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -18,44 +17,48 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Banner } from '@prisma/client'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { BannerItem } from './Banner-item'
-import { useMemo } from 'react'
+import TemplateCardFooter from './CardFooter'
+import { usePagination } from './hooks/usePagination'
+import SelectItems from './Select-items'
 
 export function BannersTable({
   banners,
-  offset,
   totalBanners,
   filter,
 }: {
   banners: Banner[] | []
-  offset: number
   totalBanners: number
   filter: string
 }) {
-  const router = useRouter()
-  const productsPerPage = 5
-
-  function prevPage() {
-    router.back()
-  }
-
-  function nextPage() {
-    router.push(`/?offset=${offset}`, { scroll: false })
-  }
-
-  const filteredBanners = useMemo(() => {
-    return banners.filter((banner) =>
-      banner.name.toLowerCase().includes(filter?.toLocaleLowerCase()),
-    )
-  }, [banners, filter])
+  const {
+    handleSelectChange,
+    nextPage,
+    prevPage,
+    itemsPerPage,
+    maxOffset,
+    offset,
+    paginatedItems,
+  } = usePagination({
+    filter,
+    totalItems: totalBanners,
+    items: banners,
+    itemsPerPageDefault: 2,
+  })
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Banners</CardTitle>
-        <CardDescription>Gerencie aqui seus banners</CardDescription>
+        <div className="flex justify-between">
+          <div className="flex flex-col">
+            <CardTitle>Banners</CardTitle>
+            <CardDescription>Gerencie aqui seus banners</CardDescription>
+          </div>
+          <div className="flex gap-2">
+            <Button>Cadastrar</Button>
+            <SelectItems handleSelectChange={handleSelectChange} />
+          </div>
+        </div>
       </CardHeader>
 
       <CardContent>
@@ -76,45 +79,20 @@ export function BannersTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredBanners.map((banner) => (
+            {paginatedItems.map((banner) => (
               <BannerItem key={banner.id} banner={banner} />
             ))}
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>
-        <form className="flex w-full items-center justify-between">
-          <div className="text-xs text-muted-foreground">
-            Mostrando{' '}
-            <strong>
-              {Math.min(offset - productsPerPage, totalBanners) + 1}-{offset}
-            </strong>{' '}
-            de <strong>{totalBanners}</strong> banners
-          </div>
-          <div className="flex">
-            <Button
-              formAction={prevPage}
-              variant="ghost"
-              size="sm"
-              type="submit"
-              disabled={offset === productsPerPage}
-            >
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Anterior
-            </Button>
-            <Button
-              formAction={nextPage}
-              variant="ghost"
-              size="sm"
-              type="submit"
-              disabled={offset + productsPerPage > totalBanners}
-            >
-              Próximo
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </form>
-      </CardFooter>
+      <TemplateCardFooter
+        offset={offset}
+        prevPage={prevPage}
+        nextPage={nextPage}
+        totalItems={totalBanners}
+        itemsPerPage={itemsPerPage}
+        maxOffset={maxOffset}
+      />
     </Card>
   )
 }
