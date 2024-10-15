@@ -19,10 +19,18 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // Definir o tipo de conteúdo como PNG (ajuste conforme o tipo do arquivo)
     res.setHeader('Content-Type', 'image/png')
+
     const fileStream = fs.createReadStream(filePath)
-    fileStream.pipe(res)
+
+    // Trata possíveis erros de leitura do arquivo
+    fileStream.on('error', (streamErr) => {
+      console.error(streamErr)
+      return res.status(500).json({ message: 'Error reading the file' })
+    })
+
+    // Garante que a resposta será finalizada corretamente após o streaming
+    fileStream.pipe(res).on('finish', () => {
+      res.end()
+    })
   })
 }
-
-// Rota para servir arquivos estáticos
-// /api/uploads/CopoGGstanley.png
