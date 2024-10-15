@@ -47,7 +47,7 @@ export function BannersTable({
 
   const filteredBanners = useMemo(() => {
     return banners.filter((banner) =>
-      banner.imageTitle.toLowerCase().includes(filter?.toLocaleLowerCase()),
+      banner.name.toLowerCase().includes(filter?.toLocaleLowerCase()),
     )
   }, [banners, filter])
 

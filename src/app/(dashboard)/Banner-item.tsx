@@ -17,7 +17,7 @@ export function BannerItem({ banner }: { banner: Banner }) {
     <TableRow>
       <TableCell className="hidden sm:table-cell">
         <Image
-          alt={banner.imageTitle}
+          alt={banner.name}
           className="aspect-square rounded-md object-cover"
           height="64"
           src={`/api/uploads/${banner.imagePath}`}
@@ -25,9 +25,7 @@ export function BannerItem({ banner }: { banner: Banner }) {
         />
       </TableCell>
 
-      <TableCell className="text-center font-medium">
-        {banner.imageTitle}
-      </TableCell>
+      <TableCell className="text-center font-medium">{banner.name}</TableCell>
 
       <TableCell className="text-center">
         <Badge
