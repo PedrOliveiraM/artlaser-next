@@ -12,45 +12,45 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import { Banner } from '@prisma/client'
 import { MoreHorizontal, Pencil, ToggleRight, Trash2 } from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
+import { updateStatusBanner } from './_actions/actions'
 
 export function BannerItem({ banner }: { banner: Banner }) {
   async function handleStatusToggleButton(bannerId: number) {
     try {
-      const response = await fetch(`/api/banner/${bannerId}/toggleStatus`, {
-        method: 'PUT',
-      })
-
-      if (!response.ok) {
-        throw new Error('Erro ao atualizar o status do banner.')
+      const res = await updateStatusBanner(bannerId)
+      if (res.status) {
+        setStateBanner(res.data)
       }
-
-      const updatedBanner = await response.json()
-      return updatedBanner
     } catch (error) {
-      alert(error)
+      throw new Error(`Unable to update banner : ${error}`)
     }
   }
+
+  const [stateBanner, setStateBanner] = useState(banner)
 
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
         <Image
-          alt={banner.name}
+          alt={stateBanner.name}
           className="aspect-square rounded-md object-cover"
           height="64"
-          src={`/api/uploads/${banner.imagePath}`}
+          src={`/api/uploads/${stateBanner.imagePath}`}
           width="64"
         />
       </TableCell>
 
-      <TableCell className="text-center font-medium">{banner.name}</TableCell>
+      <TableCell className="text-center font-medium">
+        {stateBanner.name}
+      </TableCell>
 
       <TableCell className="text-center">
         <Badge
-          variant={banner.status ? 'success' : 'destructive'}
+          variant={stateBanner.status ? 'success' : 'destructive'}
           className="capitalize"
         >
-          {banner.status ? 'Ativo' : 'Pausado'}
+          {stateBanner.status ? 'Ativo' : 'Pausado'}
         </Badge>
       </TableCell>
 
@@ -67,13 +67,13 @@ export function BannerItem({ banner }: { banner: Banner }) {
               Ações
             </DropdownMenuLabel>
             <DropdownMenuItem className="flex items-center gap-2">
-              <Button
-                variant={'ghost'}
-                onClick={() => handleStatusToggleButton(banner.id)}
+              <button
+                className="flex items-center gap-2"
+                onClick={() => handleStatusToggleButton(stateBanner.id)}
               >
                 <ToggleRight size={20} />
-                {banner.status ? 'Desativar' : 'Ativar'}
-              </Button>
+                {stateBanner.status ? 'Desativar' : 'Ativar'}
+              </button>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2">
               <Pencil size={20} />
