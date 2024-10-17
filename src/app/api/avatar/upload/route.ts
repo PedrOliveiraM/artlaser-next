@@ -1,52 +1,24 @@
-import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
+import { put, del } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const body = (await request.json()) as HandleUploadBody
+  const { searchParams } = new URL(request.url)
+  const filename = searchParams.get('filename')
 
-  try {
-    const jsonResponse = await handleUpload({
-      body,
-      request,
-      onBeforeGenerateToken: async (
-        pathname,
-        /* clientPayload */
-      ) => {
-        // Generate a client token for the browser to upload the file
-        // ⚠️ Authenticate and authorize users before generating the token.
-        // Otherwise, you're allowing anonymous uploads.
+  if (!filename) throw new Error('filename does not exist')
+  if (!request.body) throw new Error('the request body is required')
 
-        return {
-          allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif'],
-          path: pathname,
-          tokenPayload: JSON.stringify({
-            // optional, sent to your server on upload completion
-            // you could pass a user id from auth, or a value from clientPayload
-          }),
-        }
-      },
-      onUploadCompleted: async ({ blob, tokenPayload }) => {
-        // Get notified of client upload completion
-        // ⚠️ This will not work on `localhost` websites,
-        // Use ngrok or similar to get the full upload flow
+  const blob = await put(filename, request.body, {
+    access: 'public',
+  })
 
-        console.log('blob upload completed', blob, tokenPayload)
+  return NextResponse.json(blob)
+}
 
-        try {
-          // Run any logic after the file upload completed
-          // const { userId } = JSON.parse(tokenPayload);
-          // await db.update({ avatar: blob.url, userId });
-        } catch (error) {
-          throw new Error(`${error} ! Could not update user`)
-        }
-      },
-    })
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const urlToDelete = searchParams.get('url') as string
+  await del(urlToDelete)
 
-    return NextResponse.json(jsonResponse)
-  } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 400 }, // The webhook will retry 5 times waiting for a 200
-    )
-  }
+  return new Response()
 }
