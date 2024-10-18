@@ -4,12 +4,17 @@ import { Input } from '@/app/components/ui/input'
 import { Textarea } from '@/app/components/ui/textarea'
 import { useToast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
+import { PutBlobResult } from '@vercel/blob'
+
+import 'cropperjs/dist/cropper.css'
+import Image from 'next/image'
+import Link from 'next/link'
+import React, { useRef, useState } from 'react'
+import Cropper from 'react-cropper'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
-import Link from 'next/link'
 
-// Zod schema for form validation
 const productSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   description: z.string().min(1, { message: 'Description is required' }),
@@ -29,16 +34,13 @@ const productSchema = z.object({
   imageTitle: z.string().min(1, { message: 'Image title is required' }),
   imagePath: z.string().optional(), // This will be set after file upload
   status: z.enum(['ativo', 'pausado']).default('ativo'), // Status as enum
-  file: z.instanceof(File).optional(), // File input for image upload
 })
-
 export type ProductFormInputs = z.infer<typeof productSchema>
 
 export default function ProductForm() {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<ProductFormInputs>({
     resolver: zodResolver(productSchema),
@@ -47,51 +49,153 @@ export default function ProductForm() {
 
   const onSubmit = async (data: ProductFormInputs) => {
     try {
-      const formData = new FormData()
+      alert('submit')
+      if (!croppedImage) throw new Error('Cropped Image does not exist')
 
-      // Adiciona os campos do formulário ao FormData
-      formData.append('name', data.name)
-      formData.append('description', data.description)
-      formData.append('category', data.category)
-      formData.append('retailPrice', data.retailPrice.toString())
-      formData.append('wholesalePrice', data.wholesalePrice.toString())
-      formData.append('minQuantity', data.minQuantity.toString())
-      formData.append('imageTitle', data.imageTitle)
+      const fileCropped = await convertUrlToFile(croppedImage, imageName)
 
-      // Adiciona o arquivo se ele foi enviado
-      if (data.file) {
-        formData.append('file', data.file)
-      }
+      console.log('Novo arquivo:', fileCropped, blob)
 
-      const response = await fetch('/api/uploads/add-product', {
-        method: 'POST',
-        body: formData,
-      })
+      const response = await fetch(
+        `/api/avatar/upload?filename=${fileCropped.name}`,
+        {
+          method: 'POST',
+          body: fileCropped,
+        },
+      )
 
-      if (!response.ok) {
-        throw new Error('Falha ao enviar o produto.')
-      }
+      const newBlob = (await response.json()) as PutBlobResult
 
-      const result = await response.json()
-      console.log('Upload bem-sucedido:', result)
+      setBlob(newBlob)
+
+      console.log('Upload bem-sucedido:')
+      console.log('#data antes da mod:', data)
+      data.imagePath = newBlob.url
+      console.log('#data depois da mod:', data)
       toast({
         title: 'Success',
         description: 'Produto adicionado com sucesso!',
       })
     } catch (error) {
       toast({ title: 'Erro', description: (error as Error).message })
+      console.error(error)
     }
   }
 
+  const [blob, setBlob] = useState<PutBlobResult | null>(null)
+
+  const [image, setImage] = useState<string | null>(null) // imagem enviada pelo usuario
+  const [imageName, setImageName] = useState<string>('') // imagem enviada pelo usuario
+  const [croppedImage, setCroppedImage] = useState<string | null>(null) // imagem cortada
+  const cropperRef = useRef<HTMLImageElement | null>(null)
+
+  const [showPreview, setshowPreview] = useState(false)
+  const [showImage, setshowImage] = useState(false)
+
+  // recebe a imagem do usuario e salva em um state
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] // pegando a imagem
+    if (!file) throw new Error('Image required') // verificando se existe
+    setImageName(file.name) // guardando o nome da imagem
+
+    console.log('Nome da imagem enviada:', imageName)
+    const imageUrl = URL.createObjectURL(file) // tranformando a imagem em uma URL TEMPORARIA
+    setImage(imageUrl)
+    setshowImage(true)
+  }
+
+  const cropImage = () => {
+    if (cropperRef.current && cropperRef.current.cropper) {
+      const croppedCanvas = cropperRef.current.cropper.getCroppedCanvas()
+      const croppedUrl = croppedCanvas.toDataURL('image/jpeg')
+      setCroppedImage(croppedUrl)
+      setshowPreview(true)
+      setshowImage(false)
+    }
+  }
+
+  const convertUrlToFile = async (
+    url: string,
+    fileName: string,
+  ): Promise<File> => {
+    const response = await fetch(url)
+    const blob = await response.blob()
+    return new File([blob], fileName, { type: blob.type })
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-96 space-y-4 p-3">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">
-            Cadastrar Produto
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-center text-2xl font-bold">
+          Cadastrar Produto
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {
+            // PARTE DO CROPEED
+          }
+          <label htmlFor="imageTitle">Título da Imagem</label>
+          <Input type="file" accept="image/*" onChange={handleImageChange} />
+          {image && showImage && (
+            <div className="mt-5 flex max-w-sm flex-col justify-center">
+              <Cropper
+                src={image}
+                className="max-h-96"
+                aspectRatio={1} // Adjust to crop in a square ratio (or any ratio you want)
+                guides={false}
+                ref={cropperRef}
+                viewMode={1}
+                dragMode="move"
+                cropBoxMovable={true}
+                cropBoxResizable={true}
+                autoCropArea={1}
+                background={false}
+              />
+              <Button
+                variant={'secondary'}
+                type="button"
+                onClick={cropImage}
+                className="mt-10"
+              >
+                Cortar Imagem
+              </Button>
+            </div>
+          )}
+
+          {croppedImage && showPreview && (
+            <div className="relative">
+              <div className="flex flex-col justify-center gap-2">
+                <h2 className="text-center font-semibold">Imagem cortada</h2>
+                <Image
+                  src={croppedImage}
+                  alt="Cropped"
+                  className="mx-auto object-cover"
+                  width={215}
+                  height={215}
+                />
+                <Button type="button" onClick={() => setshowPreview(false)}>
+                  Fechar
+                </Button>
+              </div>
+            </div>
+          )}
+          {
+            // PARTE DO CROPEED
+          }
+          <div>
+            <label htmlFor="imageTitle">Título da Imagem</label>
+            <Input
+              required
+              id="imageTitle"
+              {...register('imageTitle')}
+              placeholder="Image Title"
+            />
+            {errors.imageTitle && (
+              <span className="text-red-500">{errors.imageTitle.message}</span>
+            )}
+          </div>
+
           <div>
             <label htmlFor="name">Nome do produto</label>
             <Input
@@ -175,81 +279,18 @@ export default function ProductForm() {
               <span className="text-red-500">{errors.minQuantity.message}</span>
             )}
           </div>
-
-          <div>
-            <label htmlFor="imageTitle">Título da Imagem</label>
-            <Input
-              required
-              id="imageTitle"
-              {...register('imageTitle')}
-              placeholder="Image Title"
-            />
-            {errors.imageTitle && (
-              <span className="text-red-500">{errors.imageTitle.message}</span>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="file">Upload da Imagem</label>
-            <Controller
-              name="file"
-              control={control}
-              render={({ field }) => (
-                <Input
-                  required
-                  id="file"
-                  type="file"
-                  accept="image/*" // Limit file type to images
-                  onChange={(e) => {
-                    const file = e.target.files?.[0] ?? null // Use optional chaining and fallback to null
-                    field.onChange(file) // Pass the file to the onChange function
-                  }}
-                />
-              )}
-            />
-            {errors.file && (
-              <span className="text-red-500">{errors.file.message}</span>
-            )}
-          </div>
-
-          <div className="flex items-center">
-            <span className="mr-4">Status:</span>
-            <div className="flex items-center">
-              <Input
-                required
-                type="radio"
-                value="ativo"
-                {...register('status')}
-                id="ativo"
-              />
-              <label htmlFor="ativo" className="ml-2">
-                Ativo
-              </label>
-            </div>
-            <div className="ml-4 flex items-center">
-              <Input
-                required
-                type="radio"
-                value="pausado"
-                {...register('status')}
-                id="pausado"
-              />
-              <label htmlFor="pausado" className="ml-2">
-                Pausado
-              </label>
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link href={'/pages/dashboard'}>
-            <Button type="button" variant={'alert'}>
-              Voltar
-            </Button>
-          </Link>
-
-          <Button type="submit">Adicionar Produto</Button>
-        </CardFooter>
-      </Card>
-    </form>
+        </form>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Link href={'/pages/dashboard'}>
+          <Button type="button" variant={'alert'}>
+            Voltar
+          </Button>
+        </Link>
+        <Button type="button" onClick={handleSubmit(onSubmit)}>
+          Adicionar Produto
+        </Button>
+      </CardFooter>
+    </Card>
   )
 }

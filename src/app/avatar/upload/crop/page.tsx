@@ -2,6 +2,7 @@
 'use client'
 
 import { Button } from '@/app/components/ui/button'
+import { Input } from '@/app/components/ui/input'
 import { PutBlobResult } from '@vercel/blob'
 import 'cropperjs/dist/cropper.css'
 import Image from 'next/image'
@@ -70,51 +71,57 @@ export default function ImageCropper() {
     const newBlob = (await response.json()) as PutBlobResult
 
     setBlob(newBlob)
+
+    return newBlob
   }
 
   return (
     <form onSubmit={uploadCroppedImage}>
-      <div className="flex h-screen flex-col items-center justify-center bg-slate-100">
-        <h1 className="text-xl font-bold">Envie a imagem</h1>
-        {/* Input for selecting an image */}
-        <input type="file" accept="image/*" onChange={handleImageChange} />
+      <label htmlFor="imageTitle">Título da Imagem</label>
+      <Input type="file" accept="image/*" onChange={handleImageChange} />
+      {image && showImage && (
+        <div className="mt-5 flex max-w-sm flex-col justify-center">
+          <Cropper
+            src={image}
+            className="max-h-96"
+            aspectRatio={1} // Adjust to crop in a square ratio (or any ratio you want)
+            guides={false}
+            ref={cropperRef}
+            viewMode={1}
+            dragMode="move"
+            cropBoxMovable={true}
+            cropBoxResizable={true}
+            autoCropArea={1}
+            background={false}
+          />
+          <Button
+            variant={'secondary'}
+            type="button"
+            onClick={cropImage}
+            className="mt-10"
+          >
+            Cortar Imagem
+          </Button>
+        </div>
+      )}
 
-        {/* Display the image cropper only if an image is uploaded */}
-        {image && showImage && (
-          <div className="mt-5 flex max-w-sm flex-col justify-center">
-            <Cropper
-              src={image}
-              className="max-h-96"
-              aspectRatio={1} // Adjust to crop in a square ratio (or any ratio you want)
-              guides={false}
-              ref={cropperRef}
-              viewMode={1}
-              dragMode="move"
-              cropBoxMovable={true}
-              cropBoxResizable={true}
-              autoCropArea={1}
-              background={false}
-            />
-            <button type="button" onClick={cropImage} className="mt-10">
-              Cortar Imagem
-            </button>
-          </div>
-        )}
-
-        {croppedImage && showPreview && (
-          <div className="relative">
-            <h2>Cropped Image Preview</h2>
+      {croppedImage && showPreview && (
+        <div className="relative">
+          <div className="flex flex-col justify-center gap-2">
+            <h2 className="text-center font-semibold">Imagem cortada</h2>
             <Image
               src={croppedImage}
               alt="Cropped"
-              className="object-cover"
+              className="mx-auto object-cover"
               width={215}
               height={215}
             />
-            <Button type="submit">Salvar Imagem</Button>
+            <Button type="button" onClick={() => setshowPreview(false)}>
+              Fechar
+            </Button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </form>
   )
 }

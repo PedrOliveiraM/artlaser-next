@@ -56,7 +56,7 @@ export function ProductsTable({
           </div>
           <div className="flex gap-2">
             <Button asChild>
-              <Link href={'/pages/dashboard/add-product'}>Cadastrar</Link>
+              <Link href={'/dashboard/add-product'}>Cadastrar</Link>
             </Button>
             <SelectItems handleSelectChange={handleSelectChange} />
           </div>
