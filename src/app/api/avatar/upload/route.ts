@@ -1,4 +1,4 @@
-import { put, del } from '@vercel/blob'
+import { put, del, list } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -21,4 +21,9 @@ export async function DELETE(request: Request) {
   await del(urlToDelete)
 
   return new Response()
+}
+
+export async function GET() {
+  const { blobs } = await list()
+  return Response.json(blobs)
 }
