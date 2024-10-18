@@ -1,15 +1,11 @@
 'use client'
-
-import BlobUrls from '@/app/components/getUrlblob'
 import { Button } from '@/app/components/ui/button'
-import { Input } from '@/app/components/ui/input'
 import type { PutBlobResult } from '@vercel/blob'
 import { useState, useRef, FormEvent } from 'react'
 
 export default function AvatarUploadPage() {
   const inputFileRef = useRef<HTMLInputElement>(null)
   const [blob, setBlob] = useState<PutBlobResult | null>(null)
-  const [blobUrl, setBlobUrl] = useState<string>('')
 
   const uploadImageBlob = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -30,18 +26,6 @@ export default function AvatarUploadPage() {
     setBlob(newBlob)
   }
 
-  const deleteImageBlob = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const response = await fetch(`/api/avatar/upload?url=${blobUrl}`, {
-      method: 'DELETE',
-    })
-
-    if (response.status === 200) {
-      alert('the image has been removed')
-    }
-  }
-
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-4">
       <div className="border-spacing-1 space-y-3 rounded-lg bg-slate-100 p-5 shadow-2xl">
@@ -59,8 +43,22 @@ export default function AvatarUploadPage() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+// const deleteImageBlob = async (event: FormEvent<HTMLFormElement>) => {
+//   event.preventDefault()
 
-      <div className="border-spacing-1 space-y-3 rounded-lg bg-slate-100 p-5 shadow-2xl">
+//   const response = await fetch(`/api/avatar/upload?url=${blobUrl}`, {
+//     method: 'DELETE',
+//   })
+
+//   if (response.status === 200) {
+//     alert('the image has been removed')
+//   }
+// }
+
+/* <div className="border-spacing-1 space-y-3 rounded-lg bg-slate-100 p-5 shadow-2xl">
         <h1 className="font-bold">Delete Avatar</h1>
         <form onSubmit={deleteImageBlob}>
           <div className="flex flex-col gap-2">
@@ -73,7 +71,4 @@ export default function AvatarUploadPage() {
           </div>
         </form>
       </div>
-      <BlobUrls />
-    </div>
-  )
-}
+      <BlobUrls /> */
