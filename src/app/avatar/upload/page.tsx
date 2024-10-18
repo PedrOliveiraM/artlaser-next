@@ -1,43 +1,79 @@
 'use client'
 
+import BlobUrls from '@/app/components/getUrlblob'
 import { Button } from '@/app/components/ui/button'
-import { type PutBlobResult } from '@vercel/blob'
-import { upload } from '@vercel/blob/client'
-import { useState, useRef } from 'react'
+import { Input } from '@/app/components/ui/input'
+import type { PutBlobResult } from '@vercel/blob'
+import { useState, useRef, FormEvent } from 'react'
 
 export default function AvatarUploadPage() {
   const inputFileRef = useRef<HTMLInputElement>(null)
   const [blob, setBlob] = useState<PutBlobResult | null>(null)
+  const [blobUrl, setBlobUrl] = useState<string>('')
+
+  const uploadImageBlob = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!inputFileRef.current?.files) {
+      throw new Error('No file selected')
+    }
+
+    const file = inputFileRef.current.files[0]
+
+    const response = await fetch(`/api/avatar/upload?filename=${file.name}`, {
+      method: 'POST',
+      body: file,
+    })
+
+    const newBlob = (await response.json()) as PutBlobResult
+
+    setBlob(newBlob)
+  }
+
+  const deleteImageBlob = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const response = await fetch(`/api/avatar/upload?url=${blobUrl}`, {
+      method: 'DELETE',
+    })
+
+    if (response.status === 200) {
+      alert('the image has been removed')
+    }
+  }
+
   return (
-    <>
-      <h1>Upload Your Avatar</h1>
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
+      <div className="border-spacing-1 space-y-3 rounded-lg bg-slate-100 p-5 shadow-2xl">
+        <h1 className="font-bold">Upload Your Avatar</h1>
 
-      <form
-        onSubmit={async (event) => {
-          event.preventDefault()
+        <form onSubmit={uploadImageBlob}>
+          <div className="flex flex-col gap-2">
+            <input name="file" ref={inputFileRef} type="file" required />
+            <Button type="submit">Upload</Button>
+          </div>
+        </form>
+        {blob && (
+          <div>
+            Blob url: <a href={blob.url}>{blob.url}</a>
+          </div>
+        )}
+      </div>
 
-          if (!inputFileRef.current?.files) {
-            throw new Error('No file selected')
-          }
-
-          const file = inputFileRef.current.files[0]
-
-          const newBlob = await upload(file.name, file, {
-            access: 'public',
-            handleUploadUrl: '/api/avatar/upload',
-          })
-
-          setBlob(newBlob)
-        }}
-      >
-        <input name="file" ref={inputFileRef} type="file" required />
-        <Button type="submit">Upload</Button>
-      </form>
-      {blob && (
-        <div>
-          Blob url: <a href={blob.url}>{blob.url}</a>
-        </div>
-      )}
-    </>
+      <div className="border-spacing-1 space-y-3 rounded-lg bg-slate-100 p-5 shadow-2xl">
+        <h1 className="font-bold">Delete Avatar</h1>
+        <form onSubmit={deleteImageBlob}>
+          <div className="flex flex-col gap-2">
+            <label>Url blob</label>
+            <Input
+              onChange={(e) => setBlobUrl(e.target.value)}
+              placeholder="Url para ser removida"
+            />
+            <Button type="submit">Remover</Button>
+          </div>
+        </form>
+      </div>
+      <BlobUrls />
+    </div>
   )
 }
