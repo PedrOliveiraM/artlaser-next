@@ -1,5 +1,5 @@
 // app/api/banners/[id]/route.ts
-import { db } from '@/lib/db' // Certifique-se de que o caminho está correto
+import { db } from '@/app/_lib/db' // Certifique-se de que o caminho está correto
 import { NextResponse } from 'next/server'
 
 // Manipulador da rota para alterar o status do banner
