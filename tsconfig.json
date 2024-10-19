@@ -23,7 +23,7 @@
     ],
     "paths": {
       "@/*": [
-        "./src/*"
+        "./*"
       ]
     }
   },
@@ -33,7 +33,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "pages/api/create-product.js",
-    "src/app/pages/api/product.js",
+    "./app/pages/api/product.js",
     "prisma/**/*.ts"
   ],
   "exclude": [

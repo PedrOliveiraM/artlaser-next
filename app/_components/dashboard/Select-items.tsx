@@ -4,7 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/app/components/ui/select'
+} from '@/app/_components/ui/select'
 
 interface SelectProps {
   handleSelectChange: (value: string) => void

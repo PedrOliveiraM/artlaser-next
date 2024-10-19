@@ -1,7 +1,7 @@
 'use client'
-import { Button } from '@/app/components/ui/button'
-import { Input } from '@/app/components/ui/input'
-import { Textarea } from '@/app/components/ui/textarea'
+import { Button } from '@/app/_components/ui/button'
+import { Input } from '@/app/_components/ui/input'
+import { Textarea } from '@/app/_components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PutBlobResult } from '@vercel/blob'
 
@@ -14,6 +14,9 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
 
+interface CropperImageElement extends HTMLImageElement {
+  cropper: Cropper // Assuming Cropper is the type from the cropperjs library
+}
 const productSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   description: z.string().min(1, { message: 'Description is required' }),
@@ -45,7 +48,7 @@ export default function ProductForm() {
   const [image, setImage] = useState<string | null>(null) // imagem enviada pelo usuario
   const [imageName, setImageName] = useState<string>('') // imagem enviada pelo usuario
   const [croppedImage, setCroppedImage] = useState<string | null>(null) // imagem cortada
-  const cropperRef = useRef<HTMLImageElement | null>(null)
+  const cropperRef = useRef<CropperImageElement | null>(null)
 
   const [showPreview, setshowPreview] = useState(false)
   const [showImage, setshowImage] = useState(false)

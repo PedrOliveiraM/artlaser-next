@@ -6,16 +6,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/app/components/ui/card'
+} from '@/app/_components/ui/card'
 import {
   Table,
   TableBody,
   TableHead,
   TableHeader,
   TableRow,
-} from '@/app/components/ui/table'
+} from '@/app/_components/ui/table'
 
-import { Button } from '@/app/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import { Banner } from '@prisma/client'
 import { BannerItem } from './Banner-item'
 import TemplateCardFooter from './CardFooter'
