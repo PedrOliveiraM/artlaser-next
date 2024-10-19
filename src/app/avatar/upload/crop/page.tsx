@@ -9,14 +9,16 @@ import Image from 'next/image'
 import React, { FormEvent, useRef, useState } from 'react'
 import Cropper from 'react-cropper'
 
+interface CropperImageElement extends HTMLImageElement {
+  cropper: Cropper // Assuming Cropper is the type from the cropperjs library
+}
 export default function ImageCropper() {
   const [blob, setBlob] = useState<PutBlobResult | null>(null)
 
   const [image, setImage] = useState<string | null>(null) // imagem enviada pelo usuario
   const [imageName, setImageName] = useState<string>('') // imagem enviada pelo usuario
   const [croppedImage, setCroppedImage] = useState<string | null>(null) // imagem cortada
-  const cropperRef = useRef<HTMLImageElement | null>(null)
-
+  const cropperRef = useRef<CropperImageElement | null>(null)
   const [showPreview, setshowPreview] = useState(false)
   const [showImage, setshowImage] = useState(false)
 
@@ -32,6 +34,7 @@ export default function ImageCropper() {
     setshowImage(true)
   }
 
+  // modifiquei o cropperRef para extender a classe e fiz uma interface
   const cropImage = () => {
     if (cropperRef.current && cropperRef.current.cropper) {
       const croppedCanvas = cropperRef.current.cropper.getCroppedCanvas()
